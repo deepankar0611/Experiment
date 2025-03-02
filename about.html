@@ -61,6 +61,39 @@
                 max-height: calc(100vh - 6rem); /* Adjust max height for larger screens */
             }
         }
+        /* Developer Section Styling */
+        .developer-section {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 2rem;
+            margin-top: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .developer-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+        }
+        .developer-card {
+            background: linear-gradient(135deg, #4CAF50, #81C784);
+            border-radius: 10px;
+            padding: 1.5rem;
+            color: white;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .developer-card:hover {
+            transform: scale(1.05);
+        }
+        .developer-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .developer-role {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body class="gradient-bg h-screen">
@@ -120,6 +153,23 @@
                         <a href="index.html" class="text-blue-300 hover:text-blue-400 text-lg font-semibold transition">
                             Back to Home
                         </a>
+                    </div>
+                    <!-- Developer Section -->
+                    <div class="developer-section mx-auto max-w-2xl fade-in">
+                        <h2 class="text-2xl font-bold text-white text-center mb-6">Meet Our Visionaries</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="developer-card">
+                                <div class="developer-name">Deepankar Singh</div>
+                                <div class="developer-role">Co-Founder & Lead Developer</div>
+                            </div>
+                            <div class="developer-card">
+                                <div class="developer-name">Aryan Bansal</div>
+                                <div class="developer-role">Co-Founder & UI/UX Designer</div>
+                            </div>
+                        </div>
+                        <p class="text-gray-200 text-center mt-4 text-lg">
+                            Deepankar and Aryan bring their expertise in software development and design to create Project To-Do, a revolutionary tool for time management and productivity. Together, they’ve crafted an app that combines cutting-edge technology with a user-friendly interface, helping millions stay organized and achieve their goals.
+                        </p>
                     </div>
                 </div>
             </div>
