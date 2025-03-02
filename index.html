@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Signup - Modern UI</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #6b7280, #1e3a8a);
+        }
+        .nav-link {
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #f0f0f0;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="gradient-bg h-screen">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 w-full bg-blue-900/80 backdrop-blur-md p-4 z-10">
+        <nav class="container mx-auto flex justify-center gap-8">
+            <a href="index.html" class="nav-link text-white text-lg font-semibold">Home</a>
+            <a href="about.html" class="nav-link text-white text-lg font-semibold">About Us</a>
+        </nav>
+    </header>
+
+    <div class="container w-full max-w-md mx-auto h-full flex items-center justify-center p-4">
+        <div class="mt-24 p-6 rounded-xl glass shadow-xl">
+            <!-- Login Form -->
+            <div id="login-form" class="form-container fade-in">
+                <h2 class="text-3xl font-bold text-white text-center mb-6">Welcome Back</h2>
+                <form id="login" class="space-y-4">
+                    <input type="email" id="login-email" placeholder="Email" required
+                        class="w-full p-3 rounded-lg bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    <input type="password" id="login-password" placeholder="Password" required
+                        class="w-full p-3 rounded-lg bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    <button type="submit"
+                        class="w-full p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 font-semibold">
+                        Login
+                    </button>
+                </form>
+                <p class="text-center text-white mt-4">
+                    Don't have an account? 
+                    <a href="#" id="show-signup" class="text-blue-300 hover:text-blue-400 transition">Sign Up</a>
+                </p>
+                <div id="login-error" class="error text-red-300 text-center mt-4"></div>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signup-form" class="form-container fade-in" style="display: none;">
+                <h2 class="text-3xl font-bold text-white text-center mb-6">Create Account</h2>
+                <form id="signup" class="space-y-4">
+                    <input type="email" id="signup-email" placeholder="Email" required
+                        class="w-full p-3 rounded-lg bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    <input type="password" id="signup-password" placeholder="Password" required
+                        class="w-full p-3 rounded-lg bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    <button type="submit"
+                        class="w-full p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 font-semibold">
+                        Sign Up
+                    </button>
+                </form>
+                <p class="text-center text-white mt-4">
+                    Already have an account? 
+                    <a href="#" id="show-login" class="text-blue-300 hover:text-blue-400 transition">Login</a>
+                </p>
+                <div id="signup-error" class="error text-red-300 text-center mt-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYAVkifnpz4IqPJLxXCZpP4Luq95t-GsU",
+            authDomain: "expeiment-6ac9b.firebaseapp.com",
+            projectId: "expeiment-6ac9b",
+            storageBucket: "expeiment-6ac9b.firebasestorage.app",
+            messagingSenderId: "873530094448",
+            appId: "1:873530094448:web:13aaf671812945e65e95b5",
+            measurementId: "G-5TD03T89ZD"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const loginForm = document.getElementById('login');
+        const signupForm = document.getElementById('signup');
+        const loginEmail = document.getElementById('login-email');
+        const loginPassword = document.getElementById('login-password');
+        const signupEmail = document.getElementById('signup-email');
+        const signupPassword = document.getElementById('signup-password');
+        const loginError = document.getElementById('login-error');
+        const signupError = document.getElementById('signup-error');
+        const loginContainer = document.getElementById('login-form');
+        const signupContainer = document.getElementById('signup-form');
+        const showSignup = document.getElementById('show-signup');
+        const showLogin = document.getElementById('show-login');
+
+        showSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginContainer.style.display = 'none';
+            signupContainer.style.display = 'block';
+        });
+
+        showLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            signupContainer.style.display = 'none';
+            loginContainer.style.display = 'block';
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = loginEmail.value;
+            const password = loginPassword.value;
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    if (!user.emailVerified) {
+                        loginError.textContent = 'Please verify your email before logging in.';
+                        auth.signOut();
+                    } else {
+                        window.location.href = 'todo.html';
+                    }
+                })
+                .catch((error) => {
+                    loginError.textContent = error.message;
+                });
+        });
+
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = signupEmail.value;
+            const password = signupPassword.value;
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    sendEmailVerification(user)
+                        .then(() => {
+                            alert('Signup successful! Please check your email (' + user.email + ') to verify your account.');
+                            signupError.textContent = '';
+                            signupForm.reset();
+                            signupContainer.style.display = 'none';
+                            loginContainer.style.display = 'block';
+                        })
+                        .catch((error) => {
+                            signupError.textContent = 'Error sending verification email: ' + error.message;
+                        });
+                })
+                .catch((error) => {
+                    signupError.textContent = error.message;
+                });
+        });
+    </script>
+</body>
+</html>

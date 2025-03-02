@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project To-Do - Modern UI</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Crypto-JS CDN for Encryption -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        /* Custom Styles for Specific Design Elements */
+        .gradient-header {
+            background: linear-gradient(90deg, #4CAF50, #81C784);
+        }
+        .task-card {
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .floating-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #4CAF50;
+            color: white;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease;
+        }
+        .floating-btn:hover {
+            transform: scale(1.1);
+        }
+        .sidebar {
+            background: #f9f9f9;
+            border-right: 1px solid #e0e0e0;
+        }
+        .nav-item {
+            padding: 10px 15px;
+            color: #666;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .nav-item:hover, .nav-item.active {
+            background: #e0f2e9;
+            color: #4CAF50;
+        }
+        .important-section, .my-day-section {
+            margin-top: 20px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="flex min-h-screen bg-gray-100">
+    <!-- Sidebar -->
+    <div class="w-64 sidebar p-4">
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">Project To-Do</h2>
+        <nav class="space-y-2">
+            <a href="#" class="nav-item flex items-center gap-2 active" id="my-day-nav">
+                <span class="text-lg">🌞</span> My Day
+            </a>
+            <a href="#" class="nav-item flex items-center gap-2" id="important-nav">
+                <span class="text-lg">⭐</span> Important
+            </a>
+            <a href="#" class="nav-item flex items-center gap-2">
+                <span class="text-lg">📋</span> Tasks
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-6">
+        <header class="gradient-header text-white p-4 rounded-t-lg mb-4">
+            <h1 class="text-2xl font-bold">My Day</h1>
+            <p class="text-sm">Today</p>
+        </header>
+
+        <div id="my-day-section" class="my-day-section">
+            <h2 class="text-lg font-semibold text-gray-800 mb-2">All Tasks</h2>
+            <ul id="todo-list" class="space-y-4"></ul>
+        </div>
+
+        <!-- Important Tasks Section -->
+        <div id="important-section" class="important-section hidden">
+            <h2 class="text-lg font-semibold text-gray-800 mb-2">Important Tasks</h2>
+            <ul id="important-list" class="space-y-4"></ul>
+        </div>
+    </div>
+
+    <!-- Floating Add Button -->
+    <button id="add-todo" class="floating-btn">+</button>
+
+    <!-- Logout Button (Fixed at Top Right) -->
+    <button id="logout" class="fixed top-4 right-4 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition">
+        Logout
+    </button>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYAVkifnpz4IqPJLxXCZpP4Luq95t-GsU",
+            authDomain: "expeiment-6ac9b.firebaseapp.com",
+            projectId: "expeiment-6ac9b",
+            storageBucket: "expeiment-6ac9b.firebasestorage.app",
+            messagingSenderId: "873530094448",
+            appId: "1:873530094448:web:13aaf671812945e65e95b5",
+            measurementId: "G-5TD03T89ZD"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const todoList = document.getElementById('todo-list');
+        const importantList = document.getElementById('important-list');
+        const addTodoBtn = document.getElementById('add-todo');
+        const logoutBtn = document.getElementById('logout');
+        const myDayNav = document.getElementById('my-day-nav');
+        const importantNav = document.getElementById('important-nav');
+        const myDaySection = document.getElementById('my-day-section');
+        const importantSection = document.getElementById('important-section');
+
+        // Authentication Check
+        onAuthStateChanged(auth, (user) => {
+            if (!user || !user.emailVerified) {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Logout
+        logoutBtn.addEventListener('click', () => {
+            signOut(auth).then(() => {
+                window.location.href = 'index.html';
+            });
+        });
+
+        // Encryption Key (Store securely, e.g., in localStorage or derived from user input)
+        const ENCRYPTION_KEY = 'YourSecretKey123!'; // Replace with a secure key or derive it from user input/passphrase
+
+        // Encrypt function using AES-256-GCM (Crypto-JS)
+        function encrypt(text) {
+            if (!text) return '';
+            return CryptoJS.AES.encrypt(text, ENCRYPTION_KEY).toString();
+        }
+
+        // Decrypt function using AES-256-GCM (Crypto-JS)
+        function decrypt(encryptedText) {
+            if (!encryptedText) return '';
+            try {
+                const bytes = CryptoJS.AES.decrypt(encryptedText, ENCRYPTION_KEY);
+                return bytes.toString(CryptoJS.enc.Utf8);
+            } catch (e) {
+                console.error('Decryption failed:', e);
+                return '';
+            }
+        }
+
+        // Show Input Modal for Adding Todo
+        let editingId = null;
+        addTodoBtn.addEventListener('click', () => {
+            const plainText = prompt('Add a new task:');
+            if (plainText) {
+                const encryptedText = encrypt(plainText);
+                if (editingId) {
+                    updateDoc(doc(db, 'todos', editingId), {
+                        text: encryptedText,
+                        completed: false,
+                        important: false
+                    });
+                    editingId = null;
+                } else {
+                    addDoc(collection(db, 'todos'), {
+                        text: encryptedText,
+                        completed: false,
+                        important: false,
+                        uid: auth.currentUser.uid,
+                        timestamp: Date.now()
+                    });
+                }
+            }
+        });
+
+        // Navigation Toggle
+        myDayNav.addEventListener('click', (e) => {
+            e.preventDefault();
+            myDayNav.classList.add('active');
+            importantNav.classList.remove('active');
+            myDaySection.classList.remove('hidden');
+            importantSection.classList.add('hidden');
+        });
+
+        importantNav.addEventListener('click', (e) => {
+            e.preventDefault();
+            importantNav.classList.add('active');
+            myDayNav.classList.remove('active');
+            myDaySection.classList.add('hidden');
+            importantSection.classList.remove('hidden');
+        });
+
+        // Real-time Todo List (Read)
+        onSnapshot(collection(db, 'todos'), (snapshot) => {
+            todoList.innerHTML = '';
+            importantList.innerHTML = '';
+
+            snapshot.forEach((doc) => {
+                if (doc.data().uid === auth.currentUser.uid) {
+                    const taskData = doc.data();
+                    const encryptedText = taskData.text;
+                    const plainText = decrypt(encryptedText);
+
+                    const li = document.createElement('div');
+                    li.className = 'task-card bg-white p-4 rounded-lg';
+                    li.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" class="toggle-complete" data-id="${doc.id}" ${taskData.completed ? 'checked' : ''}>
+                                <span class="text-gray-800 ${taskData.completed ? 'line-through' : ''}">${plainText}</span>
+                                <button class="star-btn text-yellow-500" data-id="${doc.id}" data-important="${taskData.important}">
+                                    ${taskData.important ? '★' : '☆'}
+                                </button>
+                            </div>
+                            <div class="space-x-2">
+                                <button class="view-btn bg-green-500 text-white p-1 rounded-full hover:bg-green-600 transition" data-id="${doc.id}">
+                                    👁️
+                                </button>
+                                <button class="edit-btn bg-gray-500 text-white p-1 rounded-full hover:bg-gray-600 transition" data-id="${doc.id}">
+                                    ✍️
+                                </button>
+                                <button class="delete-btn bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition" data-id="${doc.id}">
+                                    🗑️
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+                    // Always show in My Day (all tasks)
+                    todoList.appendChild(li.cloneNode(true));
+
+                    // Show in Important section if marked as important
+                    if (taskData.important) {
+                        importantList.appendChild(li.cloneNode(true));
+                    }
+                }
+            });
+
+            // Toggle Complete (Update)
+            document.querySelectorAll('.toggle-complete').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    updateDoc(doc(db, 'todos', id), { completed: e.target.checked });
+                });
+            });
+
+            // Toggle Important (Update)
+            document.querySelectorAll('.star-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const isImportant = e.target.getAttribute('data-important') === 'true';
+                    updateDoc(doc(db, 'todos', id), { important: !isImportant });
+                });
+            });
+
+            // View Todo (Simple Alert for Now)
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const task = snapshot.docs.find(doc => doc.id === id).data().text;
+                    const plainText = decrypt(task);
+                    alert(`Task Details: ${plainText}`);
+                });
+            });
+
+            // Edit Todo (Update)
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const task = snapshot.docs.find(doc => doc.id === id).data().text;
+                    const plainText = decrypt(task);
+                    editingId = id;
+                    const newText = prompt('Edit task:', plainText);
+                    if (newText) {
+                        const encryptedText = encrypt(newText);
+                        updateDoc(doc(db, 'todos', editingId), { text: encryptedText });
+                        editingId = null;
+                    }
+                });
+            });
+
+            // Delete Todo (Delete)
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    deleteDoc(doc(db, 'todos', id));
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Project To-Do</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #6b7280, #1e3a8a);
+        }
+        .nav-link {
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #f0f0f0;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="gradient-bg h-screen">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 w-full bg-blue-900/80 backdrop-blur-md p-4 z-10">
+        <nav class="container mx-auto flex justify-center gap-8">
+            <a href="index.html" class="nav-link text-white text-lg font-semibold">Home</a>
+            <a href="about.html" class="nav-link text-white text-lg font-semibold active">About Us</a>
+        </nav>
+    </header>
+
+    <div class="container w-full max-w-2xl mx-auto h-full flex items-center justify-center p-4">
+        <div class="mt-24 p-8 rounded-xl glass shadow-xl fade-in">
+            <h1 class="text-4xl font-bold text-white text-center mb-6">About Project To-Do</h1>
+            <p class="text-gray-200 text-lg leading-relaxed mb-4">
+                Welcome to Project To-Do, your ultimate task management solution designed to help you stay organized and productive. Our app allows you to create, manage, and track your tasks with ease, ensuring you never miss an important deadline or meeting.
+            </p>
+            <p class="text-gray-200 text-lg leading-relaxed mb-4">
+                With features like email-verified user authentication, real-time task synchronization, and a modern, intuitive interface, Project To-Do is perfect for individuals and teams alike. Mark tasks as important, categorize them by day, and use our CRUD operations to create, read, update, and delete tasks seamlessly.
+            </p>
+            <p class="text-gray-200 text-lg leading-relaxed">
+                Built with Firebase for secure authentication and Firestore for real-time data storage, Project To-Do ensures your data is safe and accessible anywhere. We’re committed to helping you achieve your goals—one task at a time!
+            </p>
+            <div class="text-center mt-8">
+                <a href="index.html" class="text-blue-300 hover:text-blue-400 text-lg font-semibold transition">
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // No Firebase logic needed here, just navigation
+        // You can keep this script empty or add analytics if needed
+    </script>
+</body>
+</html>
