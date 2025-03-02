@@ -6,6 +6,7 @@
     <title>About Us - Project To-Do</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="description" content="Discover the importance of time management in enhancing productivity, reducing stress, and achieving personal and professional goals. Learn practical tips with Project To-Do, your ultimate task management solution.">
     <style>
         /* Custom Animations */
         @keyframes fadeIn {
@@ -30,6 +31,36 @@
             color: #f0f0f0;
             transform: translateY(-2px);
         }
+        .blog-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        .highlight {
+            background: linear-gradient(90deg, #4CAF50, #81C784);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        /* Ensure content wrapper clears header and allows scrolling */
+        .content-wrapper {
+            padding-top: 5rem; /* Initial padding to clear header */
+            max-height: calc(100vh - 5rem); /* Limit height to viewport minus header padding */
+            overflow-y: auto; /* Enable vertical scrolling if content exceeds height */
+            width: 100%;
+            max-width: 3xl; /* Match container width for consistency */
+        }
+        @media (min-width: 768px) {
+            .content-wrapper {
+                padding-top: 6rem; /* Increase padding for larger screens */
+                max-height: calc(100vh - 6rem); /* Adjust max height for larger screens */
+            }
+        }
     </style>
 </head>
 <body class="gradient-bg h-screen">
@@ -41,22 +72,56 @@
         </nav>
     </header>
 
-    <div class="container w-full max-w-2xl mx-auto h-full flex items-center justify-center p-4">
-        <div class="mt-24 p-8 rounded-xl glass shadow-xl fade-in">
-            <h1 class="text-4xl font-bold text-white text-center mb-6">About Project To-Do</h1>
-            <p class="text-gray-200 text-lg leading-relaxed mb-4">
-                Welcome to Project To-Do, your ultimate task management solution designed to help you stay organized and productive. Our app allows you to create, manage, and track your tasks with ease, ensuring you never miss an important deadline or meeting.
-            </p>
-            <p class="text-gray-200 text-lg leading-relaxed mb-4">
-                With features like email-verified user authentication, real-time task synchronization, and a modern, intuitive interface, Project To-Do is perfect for individuals and teams alike. Mark tasks as important, categorize them by day, and use our CRUD operations to create, read, update, and delete tasks seamlessly.
-            </p>
-            <p class="text-gray-200 text-lg leading-relaxed">
-                Built with Firebase for secure authentication and Firestore for real-time data storage, Project To-Do ensures your data is safe and accessible anywhere. We’re committed to helping you achieve your goals—one task at a time!
-            </p>
-            <div class="text-center mt-8">
-                <a href="index.html" class="text-blue-300 hover:text-blue-400 text-lg font-semibold transition">
-                    Back to Home
-                </a>
+    <div class="container w-full max-w-3xl mx-auto h-full flex items-center justify-center p-4">
+        <div class="content-wrapper fade-in">
+            <div class="p-8 rounded-xl glass shadow-xl">
+                <h1 class="text-4xl font-bold text-white text-center mb-6">About Project To-Do</h1>
+                <div class="space-y-8">
+                    <div class="blog-card p-6">
+                        <h2 class="text-2xl font-semibold text-white mb-4">The Importance of Time Management in Our Lives</h2>
+                        <p class="text-gray-200 text-lg leading-relaxed mb-4">
+                            In today’s fast-paced world, where demands on our time seem endless, mastering the art of time management has become more crucial than ever. Time is a finite resource—once it’s gone, it can’t be regained. Effective time management helps us prioritize tasks, reduce stress, and achieve our personal and professional goals with greater ease. At Project To-Do, we understand the value of every second, which is why our app is designed to help you manage your time efficiently and live a more balanced, productive life.
+                        </p>
+                        <h3 class="text-xl font-semibold text-white mt-6 mb-2">Why Time Management Matters</h3>
+                        <p class="text-gray-200 text-lg leading-relaxed mb-4">
+                            Time management is the process of organizing and planning how to divide your time between specific activities to increase efficiency and productivity. It’s not just about getting more done—it’s about living a fulfilling life. Here’s why it’s essential:
+                        </p>
+                        <ul class="list-disc list-inside text-gray-200 text-lg mb-4 pl-4">
+                            <li><span class="highlight">Boosts Productivity</span>: By prioritizing tasks and eliminating distractions, you can accomplish more in less time. Studies show that individuals who practice time management are up to 25% more productive than those who don’t.</li>
+                            <li><span class="highlight">Reduces Stress</span>: Poor time management often leads to procrastination, missed deadlines, and overwhelming workloads. Effectively managing your time helps you stay calm and focused.</li>
+                            <li><span class="highlight">Improves Work-Life Balance</span>: Balancing work, family, and personal interests becomes easier when you allocate time strategically, preventing burnout and fostering well-being.</li>
+                            <li><span class="highlight">Achieves Goals</span>: Whether it’s completing a project at work or pursuing a personal passion, time management ensures you stay on track to meet your objectives.</li>
+                        </ul>
+                        <h3 class="text-xl font-semibold text-white mt-6 mb-2">The Impact of Poor Time Management</h3>
+                        <p class="text-gray-200 text-lg leading-relaxed mb-4">
+                            Failing to manage time effectively can have serious consequences. Procrastination, missed opportunities, and chronic stress are common outcomes. For instance, a 2023 survey by the American Psychological Association found that 42% of workers report feeling overwhelmed due to poor time management, leading to decreased job satisfaction and health issues. Without a system to organize tasks, you risk falling behind, which can affect both your career and personal life.
+                        </p>
+                        <h3 class="text-xl font-semibold text-white mt-6 mb-2">Practical Tips for Effective Time Management</h3>
+                        <p class="text-gray-200 text-lg leading-relaxed mb-4">
+                            Here are some actionable strategies to manage your time better, which you can implement using Project To-Do:
+                        </p>
+                        <ul class="list-disc list-inside text-gray-200 text-lg mb-4 pl-4">
+                            <li>Set Clear Goals: Use the SMART (Specific, Measurable, Achievable, Relevant, Time-bound) framework to define objectives and break them into smaller tasks.</li>
+                            <li>Prioritize Tasks: Apply the Eisenhower Matrix to categorize tasks as urgent, important, or neither, focusing on what truly matters.</li>
+                            <li>Use Tools Like Project To-Do: Our app allows you to create, track, and prioritize tasks in real-time, ensuring you never miss a deadline. Mark tasks as important, categorize them by day, and sync across devices with Firebase’s secure backend.</li>
+                            <li>Avoid Multitasking: Focus on one task at a time to improve concentration and output quality. Studies show multitasking can reduce productivity by up to 40%.</li>
+                            <li>Schedule Breaks: Incorporate the Pomodoro Technique—work for 25 minutes, then take a 5-minute break—to maintain energy and focus.</li>
+                        </ul>
+                        <h3 class="text-xl font-semibold text-white mt-6 mb-2">How Project To-Do Helps</h3>
+                        <p class="text-gray-200 text-lg leading-relaxed mb-4">
+                            At Project To-Do, we’ve built a modern, intuitive platform to streamline time management. With features like email-verified user authentication, real-time task synchronization via Firebase Firestore, and encrypted task storage, our app ensures your data is secure and accessible anywhere. Whether you’re managing daily errands, work projects, or personal goals, Project To-Do helps you stay organized, reduce stress, and maximize your productivity. Our sleek interface, inspired by cutting-edge design trends, makes task management enjoyable and efficient.
+                        </p>
+                        <h3 class="text-xl font-semibold text-white mt-6 mb-2">Conclusion</h3>
+                        <p class="text-gray-200 text-lg leading-relaxed">
+                            In conclusion, time management is a cornerstone of a successful, balanced life. By prioritizing tasks, reducing stress, and achieving goals, you can unlock your full potential. Project To-Do is here to support you on this journey, offering a powerful tool to manage your time effectively. Visit our homepage to sign up, explore our features, and start transforming your daily routine today. Embrace the importance of time management and take control of your life with Project To-Do!
+                        </p>
+                    </div>
+                    <div class="text-center">
+                        <a href="index.html" class="text-blue-300 hover:text-blue-400 text-lg font-semibold transition">
+                            Back to Home
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
